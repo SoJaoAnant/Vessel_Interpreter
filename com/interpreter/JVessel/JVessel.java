@@ -1,4 +1,4 @@
-package Vessel.com.interpreter.JVessel;
+package com.interpreter.JVessel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,8 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class vessel {
+public class JVessel {
+    static boolean had_error = false;
+
     public static void main(String[] args) throws IOException {
+        // System.out.println("Shishtem Hang");
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
             System.exit(64);
@@ -23,24 +26,41 @@ public class vessel {
     private static void run_file(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-    }
 
-    private static void run_prompt() throws IOException
-    {
-        InputStreamReader input = new InputStreamReader(System.in);
-        BufferedReader reader = new BufferedReader(input);
-
-        for(;;)
-        {
-            System.out.print("> ");
-            String line = reader.readLine();
-            if(line == null) break;
-            run(line);
+        if (had_error) {
+            System.exit(65);
         }
     }
 
-    private static void run(String source)
-    {
+    private static void run_prompt() throws IOException {
+        InputStreamReader input = new InputStreamReader(System.in);
+        BufferedReader reader = new BufferedReader(input);
 
+        for (;;) {
+            System.out.print("> ");
+            String line = reader.readLine();
+            if (line == null)
+                break;
+            run(line);
+            had_error = false;
+        }
+    }
+
+    private static void run(String source) {
+        scanner scanner = new scanner(source);
+        List<token> tokens = scanner.scan_tokens();
+
+        for (token token : tokens) {
+            System.out.println(token.to_string());
+        }
+    }
+
+    static void error(int line, String message) {
+        report(line, "", message);
+    }
+
+    private static void report(int line, String where, String message) {
+        System.err.println("[line " + line + "] Error" + where + ": " + message);
+        had_error = true;
     }
 }

@@ -1,0 +1,4 @@
+var num1 = 12;
+var num2 = 13;
+
+var ans = num1 + num2;
