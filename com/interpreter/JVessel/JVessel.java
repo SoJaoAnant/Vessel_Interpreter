@@ -50,9 +50,19 @@ public class JVessel {
         scanner scanner = new scanner(source);
         List<token> tokens = scanner.scan_tokens();
 
-        for (token token : tokens) {
-            System.out.println(token.to_string());
+        // for (token token : tokens) {
+        // System.out.println(token.to_string());
+        // }
+
+        parser parser = new parser(tokens);
+        expr expression = parser.parse();
+
+        if (had_error) {
+            System.out.println("hello");
+            return;
         }
+
+        System.out.println(new ast_printer().print(expression));
     }
 
     static void error(int line, String message) {
@@ -62,5 +72,13 @@ public class JVessel {
     private static void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         had_error = true;
+    }
+
+    static void error(token token, String message) {
+        if (token.type == token_type.EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
     }
 }
