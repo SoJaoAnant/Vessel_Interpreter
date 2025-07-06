@@ -9,7 +9,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class JVessel {
+    private static final interpreter interpreter = new interpreter();
     static boolean had_error = false;
+    static boolean had_runtime_error = false;
 
     public static void main(String[] args) throws IOException {
         // System.out.println("Shishtem Hang");
@@ -29,6 +31,9 @@ public class JVessel {
 
         if (had_error) {
             System.exit(65);
+        }
+        if (had_runtime_error) {
+            System.exit(70);
         }
     }
 
@@ -51,18 +56,20 @@ public class JVessel {
         List<token> tokens = scanner.scan_tokens();
 
         // for (token token : tokens) {
-        // System.out.println(token.to_string());
+            // System.out.println(token.to_string());
         // }
 
         parser parser = new parser(tokens);
         expr expression = parser.parse();
 
-        if (had_error) {
-            System.out.println("hello");
-            return;
-        }
+        // if (had_error) {
+            // return;
+        // }
+        
+        // System.out.println(expression);
+        // System.out.println(new ast_printer().print(expression));
 
-        System.out.println(new ast_printer().print(expression));
+        interpreter.interpret(expression);
     }
 
     static void error(int line, String message) {
@@ -80,5 +87,11 @@ public class JVessel {
         } else {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
+    }
+
+    static void runtime_error(runtime_error error)
+    {
+        System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+        had_runtime_error = true;
     }
 }

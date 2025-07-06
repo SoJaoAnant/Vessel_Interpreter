@@ -54,7 +54,7 @@ public class parser {
     private expr term() {
         expr expr = factor();
 
-        while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+        while (match(PLUS, MINUS)) {
             token operator = previous();
             expr right = factor();
             expr = new expr.binary(expr, operator, right);
@@ -66,7 +66,7 @@ public class parser {
     private expr factor() {
         expr expr = unary();
 
-        while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+        while (match(STAR, SLASH)) {
             token operator = previous();
             expr right = unary();
             expr = new expr.binary(expr, operator, right);
