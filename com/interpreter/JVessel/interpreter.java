@@ -1,23 +1,42 @@
 package com.interpreter.JVessel;
 
-public class interpreter implements expr.visitor<Object> {
+import java.util.List;
 
-    void interpret(expr expression) {
-        try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
-        } catch (runtime_error error) {
+public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
+
+    private environment environment = new environment();
+
+    void interpret(List<stmt> statements) {
+        // try {
+        //     Object value = evaluate(expression);
+        //     System.out.println(stringify(value));
+        // } catch (runtime_error error) {
+        //     JVessel.runtime_error(error);
+        // }
+        try
+        {
+            for(stmt statement : statements)
+            {
+                execute(statement);
+            }
+        } catch (runtime_error error)
+        {
             JVessel.runtime_error(error);
         }
     }
 
+    private void execute(stmt stmt)
+    {
+        stmt.accept(this);
+    }
+
     @Override
-    public Object visitliteralexpr(expr.literal expr) {
+    public Object visit_literal_expr(expr.literal expr) {
         return expr.value;
     }
 
     @Override
-    public Object visitgroupingexpr(expr.grouping expr) {
+    public Object visit_grouping_expr(expr.grouping expr) {
         return evaluate(expr.expression);
     }
 
@@ -26,7 +45,7 @@ public class interpreter implements expr.visitor<Object> {
     }
 
     @Override
-    public Object visitunaryexpr(expr.unary expr) {
+    public Object visit_unary_expr(expr.unary expr) {
         Object right = evaluate(expr.right);
 
         switch (expr.operator.type) {
@@ -39,17 +58,8 @@ public class interpreter implements expr.visitor<Object> {
         return null;
     }
 
-    private boolean is_truthy(Object obj) {
-        if (obj == null)
-            return false;
-        if (obj instanceof Boolean)
-            return (boolean) obj;
-
-        return true;
-    }
-
     @Override
-    public Object visitbinaryexpr(expr.binary expr) {
+    public Object visit_binary_expr(expr.binary expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
 
@@ -94,6 +104,46 @@ public class interpreter implements expr.visitor<Object> {
         return null;
     }
 
+    @Override
+    public Void visit_expression_stmt(stmt.expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visit_print_stmt(stmt.print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
+    @Override
+    public Void visit_Var_stmt(stmt.Var stmt)
+    {
+        Object value = null;
+        if(stmt.initializer != null)
+        {
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    @Override
+    public Object visit_variable_expr(expr.variable expr)
+    {
+        return environment.get(expr.name);
+    }
+
+    @Override
+    public Object visit_assign_expr(expr.assign expr)
+    {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
+    }
+
     /*
      * private void check_number_operands(token operator, Object operand) {
      * if (operand instanceof Double)
@@ -116,6 +166,15 @@ public class interpreter implements expr.visitor<Object> {
             return false;
 
         return a.equals(b);
+    }
+
+    private boolean is_truthy(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj instanceof Boolean)
+            return (boolean) obj;
+
+        return true;
     }
 
     private String stringify(Object object) {

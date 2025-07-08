@@ -14,10 +14,16 @@ public class generate_ast {
         String output_dir = args[0];
 
         define_ast(output_dir, "expr", Arrays.asList(
+            "assign: token name, expr value",
                 "binary: expr left, token operator, expr right",
                 "grouping: expr expression",
                 "literal: Object value",
-                "unary: token operator, expr right"));
+                "unary: token operator, expr right",
+                "variable: token name"));
+
+        define_ast(output_dir, "stmt", Arrays.asList("expression : expr expression",
+                "print: expr expression",
+                "Var: token name, expr initializer"));
     }
 
     private static void define_ast(String output_dir, String base_name, List<String> types) throws IOException {
@@ -52,7 +58,8 @@ public class generate_ast {
         for (String type : types) {
             String type_name = type.split(":")[0].trim();
             writer.println(
-                    "    R visit" + type_name + base_name + "(" + type_name + " " + base_name.toLowerCase() + ");");
+                    "    R visit_" + type_name + "_" + base_name + "(" + type_name + " " + base_name.toLowerCase()
+                            + ");");
         }
 
         writer.println(" }");
@@ -74,7 +81,7 @@ public class generate_ast {
         writer.println();
         writer.println("    @Override");
         writer.println("    <R> R accept(visitor<R> visitor) {");
-        writer.println("      return visitor.visit" + class_name + base_name + "(this);");
+        writer.println("      return visitor.visit_" + class_name + "_" + base_name + "(this);");
         writer.println("}");
 
         writer.println();

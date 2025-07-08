@@ -55,21 +55,23 @@ public class JVessel {
         scanner scanner = new scanner(source);
         List<token> tokens = scanner.scan_tokens();
 
+        // can print all the tokens
         // for (token token : tokens) {
-            // System.out.println(token.to_string());
+        // System.out.println(token.to_string());
         // }
 
+        // can print the expression all grouped up
         parser parser = new parser(tokens);
-        expr expression = parser.parse();
+        List<stmt> statements = parser.parse();
 
         // if (had_error) {
             // return;
         // }
-        
-        // System.out.println(expression);
+
         // System.out.println(new ast_printer().print(expression));
 
-        interpreter.interpret(expression);
+        // can interpret the expression (currently arithmatic only)
+        interpreter.interpret(statements);
     }
 
     static void error(int line, String message) {
@@ -89,8 +91,7 @@ public class JVessel {
         }
     }
 
-    static void runtime_error(runtime_error error)
-    {
+    static void runtime_error(runtime_error error) {
         System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
         had_runtime_error = true;
     }

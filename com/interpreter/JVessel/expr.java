@@ -4,10 +4,26 @@ import java.util.List;
 
 abstract class expr {
  interface visitor<R> {
-    R visitbinaryexpr(binary expr);
-    R visitgroupingexpr(grouping expr);
-    R visitliteralexpr(literal expr);
-    R visitunaryexpr(unary expr);
+    R visit_assign_expr(assign expr);
+    R visit_binary_expr(binary expr);
+    R visit_grouping_expr(grouping expr);
+    R visit_literal_expr(literal expr);
+    R visit_unary_expr(unary expr);
+    R visit_variable_expr(variable expr);
+ }
+static class assign extends expr {
+    assign(token name, expr value) {
+    this.name = name;
+    this.value = value;
+    }
+
+    @Override
+    <R> R accept(visitor<R> visitor) {
+      return visitor.visit_assign_expr(this);
+}
+
+    final token name;
+    final expr value;
  }
 static class binary extends expr {
     binary(expr left, token operator, expr right) {
@@ -18,7 +34,7 @@ static class binary extends expr {
 
     @Override
     <R> R accept(visitor<R> visitor) {
-      return visitor.visitbinaryexpr(this);
+      return visitor.visit_binary_expr(this);
 }
 
     final expr left;
@@ -32,7 +48,7 @@ static class grouping extends expr {
 
     @Override
     <R> R accept(visitor<R> visitor) {
-      return visitor.visitgroupingexpr(this);
+      return visitor.visit_grouping_expr(this);
 }
 
     final expr expression;
@@ -44,7 +60,7 @@ static class literal extends expr {
 
     @Override
     <R> R accept(visitor<R> visitor) {
-      return visitor.visitliteralexpr(this);
+      return visitor.visit_literal_expr(this);
 }
 
     final Object value;
@@ -57,11 +73,23 @@ static class unary extends expr {
 
     @Override
     <R> R accept(visitor<R> visitor) {
-      return visitor.visitunaryexpr(this);
+      return visitor.visit_unary_expr(this);
 }
 
     final token operator;
     final expr right;
+ }
+static class variable extends expr {
+    variable(token name) {
+    this.name = name;
+    }
+
+    @Override
+    <R> R accept(visitor<R> visitor) {
+      return visitor.visit_variable_expr(this);
+}
+
+    final token name;
  }
 
  abstract <R> R accept(visitor<R> visitor);

@@ -1,6 +1,7 @@
 package com.interpreter.JVessel;
 
 import java.util.List;
+import java.util.ArrayList;
 import static com.interpreter.JVessel.token_type.*;
 
 public class parser {
@@ -15,16 +16,89 @@ public class parser {
         this.tokens = tokens;
     }
 
-    expr parse() {
+    // expr parse() {
+    // try {
+    // return expression();
+    // } catch (parse_error error) {
+    // return null;
+    // }
+    // }
+
+    List<stmt> parse() {
+        List<stmt> statements = new ArrayList<>();
+        while (!is_at_end()) {
+            statements.add(declaration());
+        }
+        return statements;
+    }
+
+    private stmt declaration() {
         try {
-            return expression();
+            if (match(VAR))
+                return var_declaration();
+
+            return statement();
         } catch (parse_error error) {
+            synchronize();
             return null;
         }
     }
 
+    private stmt var_declaration() {
+        token name = consume(IDENTIFIER, "Expect variable name >:(");
+
+        expr initializer = null;
+        if (match(EQUAL)) {
+            initializer = expression();
+        }
+
+        consume(SEMICOLON, "Expect ';' after variable declaration >:(");
+
+        return new stmt.Var(name, initializer);
+    }
+
+    private stmt statement() {
+        if (match(PRINT))
+            return print_statement();
+
+        return expression_statement();
+    }
+
+    private stmt print_statement() {
+        expr value = expression();
+        consume(SEMICOLON, "Expect ';' after value >:(");
+        return new stmt.print(value);
+    }
+
+    private stmt expression_statement() {
+        expr expr = expression();
+        consume(SEMICOLON, "Expect ';' after value >:(");
+        return new stmt.expression(expr);
+    }
+
     private expr expression() {
-        return equality();
+        return assignment();
+    }
+
+    private expr assignment()
+    {
+        expr expr = equality();
+
+        if(match(EQUAL))
+        {
+            token equals = previous();
+            expr value = assignment();
+
+            if(expr instanceof expr.variable)
+            {
+                token name = ((expr.variable)expr).name;
+                return new expr.assign(name,value);
+            }
+
+            error(equals, "Invalid assigment target >:(");
+        }
+
+        return expr;
     }
 
     private expr equality() {
@@ -96,6 +170,9 @@ public class parser {
         if (match(NUMBER, STRING))
             return new expr.literal(previous().literal);
 
+        if (match(IDENTIFIER)) {
+            return new expr.variable(previous());
+        }
         if (match(LEFT_PAREN)) {
             expr expr = expression();
             consume(RIGHT_PAREN, "expect ')' after expression.");

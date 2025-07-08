@@ -6,25 +6,37 @@ class ast_printer implements expr.visitor<String> {
     }
 
     @Override
-    public String visitbinaryexpr(expr.binary expr) {
+    public String visit_binary_expr(expr.binary expr) {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
     @Override
-    public String visitgroupingexpr(expr.grouping expr) {
+    public String visit_grouping_expr(expr.grouping expr) {
         return parenthesize("group", expr.expression);
     }
 
     @Override
-    public String visitliteralexpr(expr.literal expr) {
+    public String visit_literal_expr(expr.literal expr) {
         if (expr.value == null)
             return "hollow";
         return expr.value.toString();
     }
 
     @Override
-    public String visitunaryexpr(expr.unary expr) {
+    public String visit_unary_expr(expr.unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visit_variable_expr(expr.variable expr)
+    {
+        return ":3";
+    }
+
+    @Override
+    public String visit_assign_expr(expr.assign expr)
+    {
+        return ":3";
     }
 
     private String parenthesize(String name, expr... exprs) {
