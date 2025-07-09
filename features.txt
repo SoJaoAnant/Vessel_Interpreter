@@ -1,0 +1,7 @@
+1. scanning
+2. parsing and returning a syntax tree
+3. evaluating an arithmetic expression
+4. declaring global and local scoped variables
+5. assignign values to variables
+6. print statements
+7. adding { } blocks

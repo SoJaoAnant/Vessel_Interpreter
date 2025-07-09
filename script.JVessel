@@ -29,9 +29,14 @@
 //print b;
 //print c;
 
-var a = 1;
-{
- var b = a + 5;
-  print b;
-  print a;
-}
+//var a = 1;
+//{
+// var b = a + 5;
+//  print b;
+//  print a;
+//}
+
+
+var value;
+print "If you assign a variable but do not give it any value to hold... then it becomes....";
+print value;

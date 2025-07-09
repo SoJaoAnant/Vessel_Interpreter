@@ -1,0 +1,9 @@
+// written by vai-jaan //
+
+var vaibee =  70;
+var anamt = 70;
+var dora = 3;
+var infinitylovie = vaibee + anamt + dora;
+
+print "always happie to see us grow, an year with u, made me feel so lovied, infinitylovie for us baba";
+print infinitylovie;

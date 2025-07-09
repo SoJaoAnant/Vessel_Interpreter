@@ -62,15 +62,20 @@ public class JVessel {
 
         // can print the expression all grouped up
         parser parser = new parser(tokens);
+        // expr expression = parser.parse();
         List<stmt> statements = parser.parse();
 
-        // if (had_error) {
-            // return;
+        if (had_error) {
+            return;
+        }
+
+        // for (stmt statement : statements) {
+            // stmt.expression exprStmt = (stmt.expression) statement;
+            // expr expression = exprStmt.expression;
+            // System.out.println(new ast_printer().print(expression));
         // }
 
-        // System.out.println(new ast_printer().print(expression));
-
-        // can interpret the expression (currently arithmatic only)
+        // can interpret the expression
         interpreter.interpret(statements);
     }
 
