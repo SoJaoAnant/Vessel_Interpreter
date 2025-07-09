@@ -8,26 +8,18 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
 
     void interpret(List<stmt> statements) {
         // try {
-        //     Object value = evaluate(expression);
-        //     System.out.println(stringify(value));
+        // Object value = evaluate(expression);
+        // System.out.println(stringify(value));
         // } catch (runtime_error error) {
-        //     JVessel.runtime_error(error);
+        // JVessel.runtime_error(error);
         // }
-        try
-        {
-            for(stmt statement : statements)
-            {
+        try {
+            for (stmt statement : statements) {
                 execute(statement);
             }
-        } catch (runtime_error error)
-        {
+        } catch (runtime_error error) {
             JVessel.runtime_error(error);
         }
-    }
-
-    private void execute(stmt stmt)
-    {
-        stmt.accept(this);
     }
 
     @Override
@@ -118,11 +110,9 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
     }
 
     @Override
-    public Void visit_Var_stmt(stmt.Var stmt)
-    {
+    public Void visit_Var_stmt(stmt.Var stmt) {
         Object value = null;
-        if(stmt.initializer != null)
-        {
+        if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
 
@@ -131,17 +121,21 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
     }
 
     @Override
-    public Object visit_variable_expr(expr.variable expr)
-    {
+    public Object visit_variable_expr(expr.variable expr) {
         return environment.get(expr.name);
     }
 
     @Override
-    public Object visit_assign_expr(expr.assign expr)
-    {
+    public Object visit_assign_expr(expr.assign expr) {
         Object value = evaluate(expr.value);
         environment.assign(expr.name, value);
         return value;
+    }
+
+    @Override
+    public Void visit_block_stmt(stmt.block stmt) {
+        execute_block(stmt.statements, new environment(environment));
+        return null;
     }
 
     /*
@@ -151,6 +145,22 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
      * throw new runtime_error(operator, "Operand must be an number >:(");
      * }
      */
+
+    private void execute(stmt stmt) {
+        stmt.accept(this);
+    }
+
+    void execute_block(List<stmt> statements, environment environment) {
+        environment previous = this.environment;
+        try {
+            this.environment = environment;
+            for (stmt statement : statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
+    }
 
     private void check_number_operands(token operator, Object left, Object right) {
         if (left instanceof Double && right instanceof Double) {

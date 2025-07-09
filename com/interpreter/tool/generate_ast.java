@@ -14,14 +14,15 @@ public class generate_ast {
         String output_dir = args[0];
 
         define_ast(output_dir, "expr", Arrays.asList(
-            "assign: token name, expr value",
+                "assign: token name, expr value",
                 "binary: expr left, token operator, expr right",
                 "grouping: expr expression",
                 "literal: Object value",
                 "unary: token operator, expr right",
                 "variable: token name"));
 
-        define_ast(output_dir, "stmt", Arrays.asList("expression : expr expression",
+        define_ast(output_dir, "stmt", Arrays.asList("block: List<stmt> statements",
+                "expression : expr expression",
                 "print: expr expression",
                 "Var: token name, expr initializer"));
     }

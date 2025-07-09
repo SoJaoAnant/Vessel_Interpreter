@@ -58,9 +58,12 @@ public class parser {
     }
 
     private stmt statement() {
-        if (match(PRINT))
+        if (match(PRINT)) {
             return print_statement();
-
+        }
+        if (match(LEFT_BRACE)) {
+            return new stmt.block(block());
+        }
         return expression_statement();
     }
 
@@ -76,23 +79,32 @@ public class parser {
         return new stmt.expression(expr);
     }
 
+    private List<stmt> block() {
+        List<stmt> statements = new ArrayList<>();
+
+        while (!check(RIGHT_BRACE) && !is_at_end()) {
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after block >:(");
+
+        return statements;
+    }
+
     private expr expression() {
         return assignment();
     }
 
-    private expr assignment()
-    {
+    private expr assignment() {
         expr expr = equality();
 
-        if(match(EQUAL))
-        {
+        if (match(EQUAL)) {
             token equals = previous();
             expr value = assignment();
 
-            if(expr instanceof expr.variable)
-            {
-                token name = ((expr.variable)expr).name;
-                return new expr.assign(name,value);
+            if (expr instanceof expr.variable) {
+                token name = ((expr.variable) expr).name;
+                return new expr.assign(name, value);
             }
 
             error(equals, "Invalid assigment target >:(");

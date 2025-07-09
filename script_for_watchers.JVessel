@@ -1,0 +1,11 @@
+// this script is written in the vessel language //
+
+var x1 = 56;
+var x2 = 10.875;
+var x3 = 8;
+
+var y = x1 + (x2 * x3);
+
+print y;
+print "Hehe :3";
+print "Thabk you mi lovie gods of github <3";

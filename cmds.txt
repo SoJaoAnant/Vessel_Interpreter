@@ -1,0 +1,22 @@
+// compiling the JVessel folder //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+javac *.java
+
+// compiling the tool folder //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\tool
+javac *.java
+cd ../../..
+java com.interpreter.tool.generate_ast C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+
+// generating abstract syntax trees //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+javac *.java
+
+// running the script //
+java com.interpreter.JVessel.JVessel script.JVessel
+
+// compiling the JVessel folder and running the script //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+javac *.java
+cd ../../..
+java com.interpreter.JVessel.JVessel script.JVessel
