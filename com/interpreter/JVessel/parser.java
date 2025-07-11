@@ -1,6 +1,7 @@
 package com.interpreter.JVessel;
 
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
 import static com.interpreter.JVessel.token_type.*;
 
@@ -70,6 +71,9 @@ public class parser {
         if (match(WHILE)) {
             return while_statement();
         }
+        if (match(FOR)) {
+            return for_statement();
+        }
         return expression_statement();
     }
 
@@ -118,6 +122,48 @@ public class parser {
         stmt body = statement();
 
         return new stmt.while_stmt(condition, body);
+    }
+
+    private stmt for_statement() {
+        consume(LEFT_PAREN, "Expect '(' after 'for' >:(");
+
+        stmt initializer;
+        if (match(SEMICOLON)) {
+            initializer = null;
+        } else if (match(VAR)) {
+            initializer = var_declaration();
+        } else {
+            initializer = expression_statement();
+        }
+
+        expr condition = null;
+        if (!check(SEMICOLON)) {
+            condition = expression();
+        }
+        consume(SEMICOLON, "Expect ';' after loop condition >:(");
+
+        expr increment = null;
+        if (!check(RIGHT_PAREN)) {
+            increment = expression();
+        }
+        consume(RIGHT_PAREN, "Expect ')' after for clauses >:(");
+
+        stmt body = statement();
+
+        if (increment != null) {
+            body = new stmt.block(Arrays.asList(body, new stmt.expression(increment)));
+        }
+
+        if (condition == null) {
+            condition = new expr.literal(true);
+        }
+        body = new stmt.while_stmt(condition, body);
+
+        if (initializer != null) {
+            body = new stmt.block(Arrays.asList(initializer, body));
+        }
+
+        return body;
     }
 
     private expr expression() {
