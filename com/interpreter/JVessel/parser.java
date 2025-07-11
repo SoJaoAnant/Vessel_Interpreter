@@ -61,8 +61,14 @@ public class parser {
         if (match(PRINT)) {
             return print_statement();
         }
+        if (match(IF)) {
+            return if_statement();
+        }
         if (match(LEFT_BRACE)) {
             return new stmt.block(block());
+        }
+        if (match(WHILE)) {
+            return while_statement();
         }
         return expression_statement();
     }
@@ -71,6 +77,20 @@ public class parser {
         expr value = expression();
         consume(SEMICOLON, "Expect ';' after value >:(");
         return new stmt.print(value);
+    }
+
+    private stmt if_statement() {
+        consume(LEFT_PAREN, "Expect '(' after 'if' >:(");
+        expr condition = expression();
+        consume(RIGHT_PAREN, "Expect ')' after if condition >:(");
+
+        stmt then_branch = statement();
+        stmt else_branch = null;
+        if (match(ELSE)) {
+            else_branch = statement();
+        }
+
+        return new stmt.if_stmt(condition, then_branch, else_branch);
     }
 
     private stmt expression_statement() {
@@ -91,12 +111,21 @@ public class parser {
         return statements;
     }
 
+    private stmt while_statement() {
+        consume(LEFT_PAREN, "Expect '(' after 'while' >:(");
+        expr condition = expression();
+        consume(RIGHT_PAREN, "Expect ')' after condition >:(");
+        stmt body = statement();
+
+        return new stmt.while_stmt(condition, body);
+    }
+
     private expr expression() {
         return assignment();
     }
 
     private expr assignment() {
-        expr expr = equality();
+        expr expr = or();
 
         if (match(EQUAL)) {
             token equals = previous();
@@ -108,6 +137,30 @@ public class parser {
             }
 
             error(equals, "Invalid assigment target >:(");
+        }
+
+        return expr;
+    }
+
+    private expr or() {
+        expr expr = and();
+
+        while (match(OR)) {
+            token operator = previous();
+            expr right = and();
+            expr = new expr.logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private expr and() {
+        expr expr = equality();
+
+        while (match(AND)) {
+            token operator = previous();
+            expr right = equality();
+            expr = new expr.logical(expr, operator, right);
         }
 
         return expr;

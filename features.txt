@@ -5,3 +5,7 @@
 5. assignign values to variables
 6. print statements
 7. adding { } blocks
+8. booleans and negation
+9. If-else statements
+10. and and or operators
+11. while loops

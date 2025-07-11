@@ -37,6 +37,23 @@
 //}
 
 
-var value;
-print "If you assign a variable but do not give it any value to hold... then it becomes....";
-print value;
+//var value;
+//print "If you assign a variable but do not give it any value to hold... then it becomes....";
+//print value;
+
+var output = false and false;
+print output;
+var output = false and true;
+print output;
+var output = true and false;
+print output;
+var output = true and true;
+print output;
+var output = false or false;
+print output;
+var output = false or true;
+print output;
+var output = true or false;
+print output;
+var output = true or true;
+print output;

@@ -28,6 +28,21 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
     }
 
     @Override
+    public Object visit_logical_expr(expr.logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == token_type.OR) {
+            if (is_truthy(left))
+                return left;
+        } else {
+            if (!is_truthy(left))
+                return left;
+        }
+
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visit_grouping_expr(expr.grouping expr) {
         return evaluate(expr.expression);
     }
@@ -135,6 +150,25 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
     @Override
     public Void visit_block_stmt(stmt.block stmt) {
         execute_block(stmt.statements, new environment(environment));
+        return null;
+    }
+
+    @Override
+    public Void visit_if_stmt_stmt(stmt.if_stmt stmt) {
+        if (is_truthy(evaluate(stmt.condition))) {
+            execute(stmt.then_branch);
+        } else if (stmt.else_branch != null) {
+            execute(stmt.else_branch);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visit_while_stmt_stmt(stmt.while_stmt stmt) {
+        while (is_truthy(evaluate(stmt.condition))) {
+            execute(stmt.body);
+        }
         return null;
     }
 

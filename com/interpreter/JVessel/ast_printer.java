@@ -28,14 +28,17 @@ class ast_printer implements expr.visitor<String> {
     }
 
     @Override
-    public String visit_variable_expr(expr.variable expr)
-    {
+    public String visit_variable_expr(expr.variable expr) {
         return ":3";
     }
 
     @Override
-    public String visit_assign_expr(expr.assign expr)
-    {
+    public String visit_assign_expr(expr.assign expr) {
+        return ":3";
+    }
+
+    @Override
+    public String visit_logical_expr(expr.logical expr) {
         return ":3";
     }
 

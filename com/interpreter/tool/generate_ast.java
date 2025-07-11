@@ -18,13 +18,16 @@ public class generate_ast {
                 "binary: expr left, token operator, expr right",
                 "grouping: expr expression",
                 "literal: Object value",
+                "logical: expr left, token operator, expr right",
                 "unary: token operator, expr right",
                 "variable: token name"));
 
         define_ast(output_dir, "stmt", Arrays.asList("block: List<stmt> statements",
                 "expression : expr expression",
+                "if_stmt: expr condition, stmt then_branch," + " stmt else_branch",
                 "print: expr expression",
-                "Var: token name, expr initializer"));
+                "Var: token name, expr initializer",
+                "while_stmt: expr condition, stmt body"));
     }
 
     private static void define_ast(String output_dir, String base_name, List<String> types) throws IOException {
