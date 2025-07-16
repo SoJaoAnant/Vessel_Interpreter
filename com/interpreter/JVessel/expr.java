@@ -7,6 +7,7 @@ abstract class expr {
     R visit_assign_expr(assign expr);
     R visit_binary_expr(binary expr);
     R visit_grouping_expr(grouping expr);
+    R visit_call_expr(call expr);
     R visit_literal_expr(literal expr);
     R visit_logical_expr(logical expr);
     R visit_unary_expr(unary expr);
@@ -53,6 +54,22 @@ static class grouping extends expr {
 }
 
     final expr expression;
+ }
+static class call extends expr {
+    call(expr callee, token paren, List<expr> arguments) {
+    this.callee = callee;
+    this.paren = paren;
+    this.arguments = arguments;
+    }
+
+    @Override
+    <R> R accept(visitor<R> visitor) {
+      return visitor.visit_call_expr(this);
+}
+
+    final expr callee;
+    final token paren;
+    final List<expr> arguments;
  }
 static class literal extends expr {
     literal(Object value) {

@@ -1,10 +1,32 @@
 package com.interpreter.JVessel;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
 
-    private environment environment = new environment();
+    final environment globals = new environment();
+    private environment environment = globals;
+
+    interpreter() {
+        globals.define("clock", new vessel_callable() {
+            @Override
+            public int arity() {
+                return 0;
+            }
+
+            @Override
+            public Object call(interpreter interpreter,
+                    List<Object> arguments) {
+                return (double) System.currentTimeMillis() / 1000.0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fn>";
+            }
+        });
+    }
 
     void interpret(List<stmt> statements) {
         // try {
@@ -170,6 +192,29 @@ public class interpreter implements expr.visitor<Object>, stmt.visitor<Void> {
             execute(stmt.body);
         }
         return null;
+    }
+
+    @Override
+    public Object visit_call_expr(expr.call expr) {
+        Object callee = evaluate(expr.callee);
+
+        List<Object> arguments = new ArrayList<>();
+        for (expr argument : expr.arguments) {
+            arguments.add(evaluate(argument));
+        }
+
+        if (!(callee instanceof vessel_callable)) {
+            throw new runtime_error(expr.paren, "What are you doing bro >:( can only call functions and classes!!");
+        }
+
+        vessel_callable function = (vessel_callable) callee;
+
+        if (arguments.size() != function.arity()) {
+            throw new runtime_error(expr.paren,
+                    "Expected " + function.arity() + " arguments, but got " + arguments.size() + ". >:(");
+        }
+
+        return function.call(this, arguments);
     }
 
     /*

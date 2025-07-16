@@ -7,6 +7,7 @@ abstract class stmt {
     R visit_block_stmt(block stmt);
     R visit_expression_stmt(expression stmt);
     R visit_if_stmt_stmt(if_stmt stmt);
+    R visit_function_stmt(function stmt);
     R visit_print_stmt(print stmt);
     R visit_Var_stmt(Var stmt);
     R visit_while_stmt_stmt(while_stmt stmt);
@@ -50,6 +51,22 @@ static class if_stmt extends stmt {
     final expr condition;
     final stmt then_branch;
     final stmt else_branch;
+ }
+static class function extends stmt {
+    function(token name, List<token> params, List<stmt> body) {
+    this.name = name;
+    this.params = params;
+    this.body = body;
+    }
+
+    @Override
+    <R> R accept(visitor<R> visitor) {
+      return visitor.visit_function_stmt(this);
+}
+
+    final token name;
+    final List<token> params;
+    final List<stmt> body;
  }
 static class print extends stmt {
     print(expr expression) {

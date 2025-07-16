@@ -35,14 +35,24 @@ public class parser {
 
     private stmt declaration() {
         try {
-            if (match(VAR))
+            if (match(FUN)) {
+                return function("function");
+            }
+            if (match(VAR)) {
                 return var_declaration();
+            }
 
             return statement();
         } catch (parse_error error) {
             synchronize();
             return null;
         }
+    }
+
+    private stmt.function function(String kind) {
+        token name = consume(IDENTIFIER, "Expect " + kind + " name >:(");
+        consume(LEFT_PAREN, "Expect '(' after " + kind + " name >:(");
+        List<token> parameters = new ArrayList<>();
     }
 
     private stmt var_declaration() {
@@ -267,7 +277,37 @@ public class parser {
             return new expr.unary(operator, right);
         }
 
-        return primary();
+        return call();
+    }
+
+    private expr call() {
+        expr expr = primary();
+
+        while (true) {
+            if (match(LEFT_PAREN)) {
+                expr = finish_call(expr);
+            } else {
+                break;
+            }
+        }
+
+        return expr;
+    }
+
+    private expr finish_call(expr callee) {
+        List<expr> arguments = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (arguments.size() >= 255) {
+                    error(peek(), "Can't have more than 255 arguments >:(");
+                }
+                arguments.add(expression());
+            } while (match(COMMA));
+        }
+
+        token paren = consume(RIGHT_PAREN, "Expect ')' after arguments >:(");
+
+        return new expr.call(callee, paren, arguments);
     }
 
     private expr primary() {

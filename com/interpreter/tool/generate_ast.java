@@ -17,6 +17,7 @@ public class generate_ast {
                 "assign: token name, expr value",
                 "binary: expr left, token operator, expr right",
                 "grouping: expr expression",
+                "call: expr callee, token paren, List<expr> arguments",
                 "literal: Object value",
                 "logical: expr left, token operator, expr right",
                 "unary: token operator, expr right",
@@ -25,6 +26,7 @@ public class generate_ast {
         define_ast(output_dir, "stmt", Arrays.asList("block: List<stmt> statements",
                 "expression : expr expression",
                 "if_stmt: expr condition, stmt then_branch," + " stmt else_branch",
+                "function: token name, List<token> params," + " List<stmt> body",
                 "print: expr expression",
                 "Var: token name, expr initializer",
                 "while_stmt: expr condition, stmt body"));
