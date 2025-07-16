@@ -13,10 +13,10 @@ cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
 javac *.java
 
 // running the script //
-java com.interpreter.JVessel.JVessel script.JVessel
+java com.interpreter.JVessel.JVessel scripts/script.JVessel
 
 // compiling the JVessel folder and running the script //
 cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
 javac *.java
 cd ../../..
-java com.interpreter.JVessel.JVessel script.JVessel
+java com.interpreter.JVessel.JVessel scripts/script.JVessel
