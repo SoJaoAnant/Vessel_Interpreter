@@ -22,12 +22,14 @@ java com.interpreter.vessel.vessel scripts/{SCRIPT_NAME}.vessel
 ---
 
 # Vessel Syntax 🎴
-Vessel is very much based on python, C and Javascript so there can be many resemblances.
+Vessel is very much based on python, C and Javascript so there can be many resemblances
+<br>
+
 Vessel is a dynamic language thus there is no need to declare variable types, thus a variable is declared as:
 ```bash
 var num = 5;
 ```
-Do not forget to put semicolon at the end.
+Do not forget to put semicolon at the end
 <br>
 Printing a statement or variable:
 ```bash
