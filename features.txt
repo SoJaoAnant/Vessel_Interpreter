@@ -10,4 +10,4 @@
 10. and and or operators
 11. while loops
 12. for loops
-13. functions
+13. functions and returning values

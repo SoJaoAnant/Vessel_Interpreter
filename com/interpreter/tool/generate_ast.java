@@ -28,6 +28,7 @@ public class generate_ast {
                 "if_stmt: expr condition, stmt then_branch," + " stmt else_branch",
                 "function: token name, List<token> params," + " List<stmt> body",
                 "print: expr expression",
+                "Return: token keyword, expr value",
                 "Var: token name, expr initializer",
                 "while_stmt: expr condition, stmt body"));
     }

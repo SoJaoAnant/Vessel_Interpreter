@@ -1,22 +1,22 @@
-// compiling the JVessel folder //
-cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+// compiling the vessel folder //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\vessel
 javac *.java
 
 // compiling the tool folder //
 cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\tool
 javac *.java
 cd ../../..
-java com.interpreter.tool.generate_ast C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+java com.interpreter.tool.generate_ast C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\vessel
 
 // generating abstract syntax trees //
-cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\vessel
 javac *.java
 
 // running the script //
-java com.interpreter.JVessel.JVessel scripts/script.JVessel
+java com.interpreter.vessel.vessel scripts/script.vessel
 
-// compiling the JVessel folder and running the script //
-cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\JVessel
+// compiling the vessel folder and running the script //
+cd C:\Users\AnAnT\Desktop\coding\Vessel\com\interpreter\vessel
 javac *.java
 cd ../../..
-java com.interpreter.JVessel.JVessel scripts/script.JVessel
+java com.interpreter.vessel.vessel scripts/script.vessel
