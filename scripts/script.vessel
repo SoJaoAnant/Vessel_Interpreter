@@ -92,17 +92,29 @@
 //counter();
 //counter();
 
-fun power(a, b)
-{
-  var ret = 1;
-  while(b > 0)
-  {
-    ret = ret * a;
-    b = b - 1;
-  }
+//fun power(a, b)
+//{
+ // var ret = 1;
+ // while(b > 0)
+ // {
+   // ret = ret * a;
+  //  b = b - 1;
+ // }
 
-  return ret;
-}
+ // return ret;
+//}
 
-var poopoo = power(4,5);
-print poopoo;
+//var poopoo = power(4,5);
+//print poopoo;
+
+
+
+
+
+
+
+
+var pi = 3.14;
+var e = 2.72;
+var pie = pi * e;
+print pie; // 8.5408
